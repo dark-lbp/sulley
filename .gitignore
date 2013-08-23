@@ -1,2 +1,4 @@
 *.pyc
-archived_fuzzies/*.session
+archived_fuzzies/*
+fuzz_session/*
+requests/*
