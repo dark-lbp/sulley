@@ -207,6 +207,14 @@ class session (pgraph.graph):
         elif self.proto == "udp":
             self.proto = socket.SOCK_DGRAM
 
+        # Added - raw socket support to fuzz protocols over ethernet layer
+        elif self.proto == "raw":
+            self.proto = socket.SOCK_RAW
+
+            if not self.bind:
+                self.logger.error("You have to set bind param in order to use RAW socket.")
+                exit()
+
         else:
             raise sex.error("INVALID PROTOCOL SPECIFIED: %s" % self.proto)
 
@@ -459,7 +467,11 @@ class session (pgraph.graph):
 
                         try:
                             # establish a connection to the target.
-                            sock = socket.socket(socket.AF_INET, self.proto)
+                            if not self.proto == socket.SOCK_RAW:
+                                sock = socket.socket(socket.AF_INET, self.proto)
+                            elif self.proto == sock.SOCK_RAW:
+                                sock = socket.socket(socket.AF_PACKET, self.proto, socket.htons(self.bind[1]))
+                                
                         except Exception, e:
                             error_handler(e, "failed creating socket", target)
                             continue
@@ -868,12 +880,33 @@ class session (pgraph.graph):
         except Exception, inst:
             self.logger.error("Socket error, send: %s" % inst)
 
+        if self.proto == socket.SOCK_RAW:
+            # RAW Socket sending
+            # RAW MTU: 1492 + 22 (ethernet header) = 1514
+            MAX_RAW = 1514
+            if len(data) > MAX_RAW:
+                self.logger.debug("Too much data for RAW packet. Truncating to %d bytes" % MAX_RAW)
+                data = data[:MAX_RAW]
+            try:
+                sock.send(data)
+            except Exception, inst:
+                self.logger.error("Socket error, send: %s" % inst)
+            self.logger.information("Packet sent: " + repr(data))
+            
+            
         if self.proto == (socket.SOCK_STREAM or socket.SOCK_DGRAM):
             # XXX - might have a need to increase this at some point. (possibly make it a class parameter)
             try:
                 self.last_recv = sock.recv(10000)
             except Exception, e:
                 self.last_recv = ""
+        # RAW socket reception
+        elif self.proto == socket.SOCK_RAW:
+            try:
+                self.last_recv = sock.recv(1600)
+            except Exception, e:
+                self.last_recv = ""
+            
         else:
             self.last_recv = ""
 
