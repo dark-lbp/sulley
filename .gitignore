@@ -1,3 +1,7 @@
 *.pyc
 archived_fuzzies/*.session
 .idea/
+build/
+dist/
+*.sublime-project
+*.sublime-workspace
