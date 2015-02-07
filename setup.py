@@ -1,20 +1,20 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-PROJECT = 'Sulley'
-VERSION = '1.0.0'
+PROJECT = 'Sulley 3'
+VERSION = '3.0.1'
 
 # Bootstrap installation of Distribute
 try:
     from setuptools import setup, find_packages
-except ImportError, m:
-    print "[-] Error: ".format(m)
+except ImportError:
+    print("Import error: install setuptools first.")
 
 setup(
     name=PROJECT,
     version=VERSION,
-    author='Pedram Amini, Aaron Portnoy, Ryan Sears',
-    author_email='pedram.amini@gmail.com, aportnoy@gmail.com, fitblip@gmail.com',
+    author='Pedram Amini, Aaron Portnoy, Ryan Sears, Yannick Formaggio',
+    author_email='pedram.amini@gmail.com, aportnoy@gmail.com, fitblip@gmail.com, yannick@thelumberjhack.org',
     url='https://github.com/yformaggio/sulley',
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -25,7 +25,7 @@ setup(
     ],
     platforms=['Any'],
     description=(
-        'Sulley Fuzzing Framework.'
+        'Sulley Fuzzing Framework python 3 implementation.'
     ),
     long_description=open('README.md').read(),
     packages=find_packages(exclude=['docs', 'examples', 'installer']),
