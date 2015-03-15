@@ -155,7 +155,7 @@ class session (pgraph.graph):
         @type  restart_sleep_time: Integer
         @kwarg restart_sleep_time: Optional, def=300) Time in seconds to sleep when target can't be restarted
         @type  web_port:	   Integer
-        @kwarg web_port:           (Optional, def=26000) Port for monitoring fuzzing campaign via a web browser	
+        @kwarg web_port:           (Optional, def=26000) Port for monitoring fuzzing campaign via a web browser
 	'''
 
         # run the parent classes initialization routine first.
@@ -873,7 +873,7 @@ class session (pgraph.graph):
         except Exception, inst:
             self.logger.error("Socket error, send: %s" % inst)
 
-        if self.proto == (socket.SOCK_STREAM or socket.SOCK_DGRAM):
+        if self.proto == socket.SOCK_STREAM or self.proto == socket.SOCK_DGRAM:
             # TODO: might have a need to increase this at some point. (possibly make it a class parameter)
             try:
                 self.last_recv = sock.recv(10000)
